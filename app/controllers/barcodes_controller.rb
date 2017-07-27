@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'open-uri'
 
 class BarcodesController < ApplicationController
   before_action :set_barcode, only: [:show, :update, :destroy]
