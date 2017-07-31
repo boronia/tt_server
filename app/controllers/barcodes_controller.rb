@@ -62,10 +62,18 @@ class BarcodesController < ApplicationController
     end
 
     def search_for_barcode(barcode)
+      barcode_result = Barcode.find_by_code(barcode)
+      if barcode_result.nil?
+        barcode_result = search_online(barcode)
+      end
+      barcode_result
+    end
+
+    def search_online(barcode)
       uri = "https://duckduckgo.com/html/?q=#{barcode}+product&atb=v32-2b_&ia=web"
       doc = Nokogiri::HTML(open(uri))
       results = doc.xpath('//h2/a')
-      barcode_result = nil
+
       unless results.empty?
         node = results[0] # get the first result
         p_info = extract_packaging_info(results)
@@ -75,9 +83,10 @@ class BarcodesController < ApplicationController
       barcode_result
     end
 
-    def extract_packaging_info(dom)
+  def extract_packaging_info(dom)
       dom.each do
         # trawl through titles to find keywords
+        # like "bottle", "can", "coffee", "pod", "paper", "cardboard"
       end
       'TODO'
     end
